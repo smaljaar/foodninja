@@ -35,6 +35,14 @@
             left: 20px;
             font-size: 1.5em;
         }
+        #lives {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2em;
+            font-weight: bold;
+        }
         #difficulty, #restart {
             position: absolute;
             top: 20px;
@@ -47,8 +55,9 @@
     </style>
 </head>
 <body>
-    <h1>Food Ninja 🍣🌯🍟🍔</h1>
+    <h1>Food Ninja</h1>
     <div id="score">Score: 0 | High Score: 0</div>
+    <div id="lives">Lives: 10 ❤️</div>
     <select id="difficulty">
         <option value="easy">Easy</option>
         <option value="medium">Medium</option>
@@ -65,6 +74,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('score');
+        const livesDisplay = document.getElementById('lives');
         const difficultySelector = document.getElementById('difficulty');
         const restartButton = document.getElementById('restart');
         const chopSound = document.getElementById('chopSound');
@@ -72,7 +82,7 @@
 
         const foods = ['🍣', '🌯', '🍟', '🍔'];
         const items = [];
-        let lives = 10;
+        let lives = 10;  // Default lives set to 10
         let gameRunning = true;
         const dynamite = '💣';
         let gravity = 0.2;
@@ -138,6 +148,7 @@
                 if (item.y > canvas.height) {
                     if (item.type !== dynamite) {
                         lives--;
+                        updateLives();
                     }
                     items.splice(index, 1);
                 }
@@ -151,6 +162,7 @@
                     if (item.type === dynamite) {
                         explosionSound.play();
                         lives--;
+                        updateLives();
                     } else {
                         chopSound.play();
                         score += scoreMultiplier;
@@ -172,12 +184,17 @@
             scoreDisplay.textContent = `Score: ${score} | High Score: ${highScore}`;
         }
 
+        function updateLives() {
+            livesDisplay.textContent = `Lives: ${lives} ❤️`;
+        }
+
         function restartGame() {
-            lives = 3;
+            lives = 10;
             score = 0;
             items.length = 0;
             gameRunning = true;
             document.getElementById('game-over').style.display = 'none';
+            updateLives();
             gameLoop();
             updateScore();
         }
